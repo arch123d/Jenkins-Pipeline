@@ -18,6 +18,7 @@ pipeline {
             steps {
                 withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar') {
                 sh '/opt/maven/bin/mvn sonar:sonar'
+                echo '"Test Successfully"
                 }
             }
         }
@@ -25,14 +26,14 @@ pipeline {
             steps {
             timeout(time: 1, unit: 'MINUTES') {
             waitForQualityGate abortPipeline: true
-    }
-}
-
+            echo '"Quality Gate Successfully"
+                }
+            }
         }
         stage('Deploy') {
             steps {
                 deploy adapters: [tomcat9(credentialsId: 'linux', path: '', url: 'http://172.31.36.218:8080')], contextPath: '/', war: '**/*.war'
-                echo '"Deploy successfully"'
+                echo '"Deploy Successfully"'
             }
         }
     }
