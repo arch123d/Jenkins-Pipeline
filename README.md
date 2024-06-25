@@ -1,42 +1,32 @@
-#Pipeline
+# Step 1: Add Jenkins User to Docker Group
+Add the Jenkins user to the Docker group to grant it access to the Docker daemon.
+
+
 ```
-pipeline {
-    agent any
-    stages {
-        stage('Pull') {
-            steps {
-                git 'https://github.com/Shantanu20000/studentapp-ui-jenkin-mvn.git'
-                echo 'Pull Successfully'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh '/opt/maven/bin/mvn clean package'
-                echo 'Build Successfully'
-            }
-        }
-        stage('Test') {
-            steps {
-                withSonarQubeEnv(installationName: 'sonar', credentialsId: 'sonar') {
-                    sh '/opt/maven/bin/mvn sonar:sonar'
-                }
-                echo 'Test Successfully'
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-                echo 'Quality Gate Successfully'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                deploy adapters: [tomcat9(credentialsId: 'linux', path: '', url: 'http://172.31.36.218:8080')], contextPath: '/', war: '**/*.war'
-                echo 'Deploy Successfully'
-            }
-        }
-    }
-}
+sudo usermod -aG docker jenkins
 ```
+Restart Jenkins to apply the new group membership.
+
+```
+sudo systemctl restart jenkins
+```
+# Step 2: Verify Docker Group Membership
+Check that the Jenkins user is now part of the Docker group.
+
+```
+groups jenkins
+```
+The output should include docker.
+
+# Step 3: Ensure Docker Service is Running
+Check if the Docker service is running.
+
+```
+sudo systemctl status docker
+```
+If it is not running, start it:
+
+```
+sudo systemctl start docker
+```
+
