@@ -1,32 +1,47 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = 'shan20000/angular:angular_frontend' // Replace with your image
+        CONTAINER_NAME = 'frontend-angular'
+    }
+
     stages {
-        stage('Pull') {
-            steps {
-                git 'https://github.com/Shantanu20000/Jenkins-Pipeline.git'
-                echo 'Pull Successfully'
-            }
-        }
-        
-        stage('Docker Pull & frontend') {
+        stage('Pull Docker Image') {
             steps {
                 script {
-                    withDockerContainer(image: 'shan20000/angular:angular_frontend', toolName: 'Docker') {
-                        // Add steps to execute inside the frontend container
-                        echo 'Running frontend container'
-                    }
+                    echo "Pulling Docker image ${DOCKER_IMAGE}"
+                    sh "docker pull ${DOCKER_IMAGE}"
                 }
             }
         }
         
-        stage('Docker Pull & Backend') {
+        stage('Run Docker Container') {
             steps {
                 script {
-                    withDockerContainer(image: 'shan20000/angular:angular_backend', toolName: 'Docker') {
-                        // Add steps to execute inside the backend container
-                        echo 'Running backend container'
-                    }
+                    echo "Running Docker container ${CONTAINER_NAME}"
+                    sh "docker run -d --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
+            }
+        }
+
+        stage('Test Docker Container') {
+            steps {
+                script {
+                    echo "Testing Docker container"
+                    sh "docker ps -a"
+                    // Add more steps to interact with your container if needed
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo "Cleaning up"
+                sh "docker stop ${CONTAINER_NAME} || true"
+                sh "docker rm ${CONTAINER_NAME} || true"
             }
         }
     }
