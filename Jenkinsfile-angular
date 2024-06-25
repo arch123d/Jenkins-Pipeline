@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     stages {
@@ -8,14 +7,27 @@ pipeline {
                 echo 'Pull Successfully'
             }
         }
-            
+        
         stage('Docker Pull & frontend') {
-            withDockerContainer(image: 'shan20000/angular:angular_frontend', toolName: 'Docker') {
-        }
-        stage('Docker Pull & Backend') {
-            withDockerContainer(image: 'shan20000/angular:angular_backend', toolName: 'Docker') {
+            steps {
+                script {
+                    withDockerContainer(image: 'shan20000/angular:angular_frontend', toolName: 'Docker') {
+                        // Add steps to execute inside the frontend container
+                        echo 'Running frontend container'
+                    }
                 }
             }
-        }           
+        }
+        
+        stage('Docker Pull & Backend') {
+            steps {
+                script {
+                    withDockerContainer(image: 'shan20000/angular:angular_backend', toolName: 'Docker') {
+                        // Add steps to execute inside the backend container
+                        echo 'Running backend container'
+                    }
+                }
+            }
+        }
     }
 }
