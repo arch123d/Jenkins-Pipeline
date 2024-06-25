@@ -8,13 +8,14 @@ pipeline {
                 echo 'Pull Successfully'
             }
         }
-        stage('Docker Build & Tag') {
-            withDockerRegistry(credentialsId: 'docker-secret', toolName: 'Docker') {
-               sh '''docker pull shan20000/angular:angular_backend
-                     docker run -dt -p 8080:8080 shan20000/angular:angular_backend
-                     docker pull shan20000/angular:angular_frontend
-                     docker run -dt -p 80:80 shan20000/angular:angular_frontend''' 
-            }
+            
+        stage('Docker Pull & Tag') {
+            withDockerContainer(image: 'shan20000/angular:angular_frontend', toolName: 'Docker') {
         }
+        stage('Docker Pull & Tag') {
+            withDockerContainer(image: 'shan20000/angular:angular_backend', toolName: 'Docker') {
+                }
+            }
+        }           
     }
 }
