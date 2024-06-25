@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Pull') {
             steps {
-                git 'https://github.com/Shantanu20000/Angular_java_Project.git'
+                git 'https://github.com/Shantanu20000/Jenkins-Pipeline.git'
                 echo 'Pull Successfully'
             }
         }
