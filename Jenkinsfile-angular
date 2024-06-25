@@ -9,10 +9,10 @@ pipeline {
             }
         }
             
-        stage('Docker Pull & Tag') {
+        stage('Docker Pull & frontend') {
             withDockerContainer(image: 'shan20000/angular:angular_frontend', toolName: 'Docker') {
         }
-        stage('Docker Pull & Tag') {
+        stage('Docker Pull & Backend') {
             withDockerContainer(image: 'shan20000/angular:angular_backend', toolName: 'Docker') {
                 }
             }
