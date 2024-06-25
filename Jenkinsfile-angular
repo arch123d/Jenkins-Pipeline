@@ -2,18 +2,33 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'shan20000/angular:angular_frontend' // Replace with your image
-        CONTAINER_NAME = 'frontend-angular'
+        DOCKER_IMAGE_FRONT = 'shan20000/angular:angular_frontend' // Replace with your image
+        CONTAINER_NAME_FRONT = 'frontend-angular'
+        DOCKER_IMAGE_BACK = 'shan20000/angular:angular_backend' // Replace with your image
+        CONTAINER_NAME_BACK = 'backend-angular'
     }
+    
 
     stages {
-        stage('Pull Docker Image And Deploy') {
+        stage('Pull Docker Image And Deploy Of Frontend') {
             steps {
                 script {
-                    echo "Pulling Docker image ${DOCKER_IMAGE}"
-                    sh "docker pull ${DOCKER_IMAGE}"
-                    echo "Running Docker container ${CONTAINER_NAME}"
-                    sh "docker run -d -p 80:80 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                    echo "Pulling Docker image ${DOCKER_IMAGE_FRONT}"
+                    sh "docker pull ${DOCKER_IMAGE_FRONT}"
+                    echo "Running Docker container ${CONTAINER_NAME_FRONT}"
+                    sh "docker run -d -p 80:80 --name ${CONTAINER_NAME_FRONT} ${DOCKER_IMAGE_FRONT}"
+                    echo "Testing Docker container"
+                    sh "docker ps -a"
+                }
+            }
+        }
+        stage('Pull Docker Image And Deploy Of Frontend') {
+            steps {
+                script {
+                    echo "Pulling Docker image ${DOCKER_IMAGE_BACK}"
+                    sh "docker pull ${DOCKER_IMAGE_BACK}"
+                    echo "Running Docker container ${CONTAINER_NAME_BACK}"
+                    sh "docker run -d -p 80:80 --name ${CONTAINER_NAME_BACK} ${DOCKER_IMAGE_BACK}"
                     echo "Testing Docker container"
                     sh "docker ps -a"
                 }
