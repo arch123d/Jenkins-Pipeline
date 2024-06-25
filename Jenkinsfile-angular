@@ -28,7 +28,7 @@ pipeline {
                     echo "Pulling Docker image ${DOCKER_IMAGE_BACK}"
                     sh "docker pull ${DOCKER_IMAGE_BACK}"
                     echo "Running Docker container ${CONTAINER_NAME_BACK}"
-                    sh "docker run -d -p 80:80 --name ${CONTAINER_NAME_BACK} ${DOCKER_IMAGE_BACK}"
+                    sh "docker run -d -p 8080:8080 --name ${CONTAINER_NAME_BACK} ${DOCKER_IMAGE_BACK}"
                     echo "Testing Docker container"
                     sh "docker ps -a"
                 }
