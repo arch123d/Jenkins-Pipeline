@@ -20,7 +20,7 @@ pipeline {
             steps {
                 script {
                     echo "Running Docker container ${CONTAINER_NAME}"
-                    sh "docker run -d -p 80:80 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
+                    sh "docker run -d -P --name ${CONTAINER_NAME} ${DOCKER_IMAGE}"
                 }
             }
         }
