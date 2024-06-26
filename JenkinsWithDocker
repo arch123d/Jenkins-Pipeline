@@ -16,33 +16,5 @@ pipeline {
                 echo 'Pull Successfully'
             }
         }
-        
-        stage('Build Docker image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}")
-                    echo 'Build Successfully'
-                }
-            }
-        }
-
-        stage('Deploy to EC2') {
-            steps {
-                script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'docker-jenkins')]) {
-                        sh """
-                            scp -i ${SSH_KEY} Dockerfile ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/
-                            ssh -i ${SSH_KEY} ${EC2_USER}@${EC2_HOST} '
-                                docker stop ${DOCKER_CONTAINER_NAME} || true
-                                docker rm ${DOCKER_CONTAINER_NAME} || true
-                                docker build -t ${DOCKER_IMAGE} /home/${EC2_USER}/
-                                docker run -d --name ${DOCKER_CONTAINER_NAME} -p 80:80 ${DOCKER_IMAGE}
-                            '
-                        """
-                    }
-                     echo 'Deploy Successfully'               
-                }
-            }
-        }
     }
 }
