@@ -4,8 +4,8 @@ pipeline {
         stage('Pull') {
             steps {
                 git 'https://github.com/Shantanu20000/CSS_Host_Site_With_Jenkins_Pipline.git'
-                ls
                 echo 'Pull Successfully'
+                sh 'ls'
             }
         }
     }
