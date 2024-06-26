@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Pull') {
             steps {
-                git 'https://github.com/Shantanu20000/CSS_Host_Site_With_Jenkins_Pipline.git'
+                git 'https://github.com/Shantanu20000/Student-Portal.git'
                 echo 'Pull Successfully'
             }
         }
