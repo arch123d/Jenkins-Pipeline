@@ -1,9 +1,9 @@
 pipeline {
     agent any
-     stages {
+    stages {
         stage('Pull') {
             steps {
-                git 'https://github.com/Shantanu20000/CSS_Host_Site_With_Jenkins_Pipline.git'
+                git 'https://github.com/Shantanu20000/studentapp-ui-jenkin-mvn.git'
                 echo 'Pull Successfully'
             }
         }
