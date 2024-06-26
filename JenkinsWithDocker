@@ -8,5 +8,14 @@ pipeline {
                 sh 'ls'
             }
         }
+        stage('Build Docker image') {
+            steps {
+                script {
+                    sh '''docker build -t dockerimage .
+                          docker run -itd -p 80:80 dockerimage'''
+                    echo 'Build Successfully'
+                }
+            }
+        }
     }
 }
