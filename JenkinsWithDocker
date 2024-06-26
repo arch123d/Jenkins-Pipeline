@@ -2,15 +2,14 @@ pipeline {
     agent any
 
     environment {
-        REPO_URL = 'https://github.com/Shantanu20000/CSS_Host_Site_With_Jenkins_Pipline.git'
         DOCKER_IMAGE = 'myapp-cicd:latest'
         EC2_USER = 'ec2-user'
         EC2_HOST = '3.110.173.55'
         DOCKER_CONTAINER_NAME = 'myapp-cicd'
     }
 
-    stages {
-        stage('Clone repository') {
+     stages {
+        stage('Pull') {
             steps {
                 git 'https://github.com/Shantanu20000/CSS_Host_Site_With_Jenkins_Pipline.git'
                 echo 'Pull Successfully'
