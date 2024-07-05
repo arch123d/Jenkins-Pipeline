@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials-id')
+        DOCKERHUB_REPO = 'your-dockerhub-username/your-repo-name'
+        KUBECONFIG_CREDENTIALS = credentials('kubeconfig-credentials-id')
+    }
+
+    stages {
+        stage('Pull Source Code') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKERHUB_REPO}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKERHUB_CREDENTIALS') {
+                        docker.image("${DOCKERHUB_REPO}:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Pull Docker Image from DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'DOCKERHUB_CREDENTIALS') {
+                        docker.image("${DOCKERHUB_REPO}:${env.BUILD_NUMBER}").pull()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    withKubeConfig([credentialsId: 'KUBECONFIG_CREDENTIALS']) {
+                        sh '''
+                        kubectl set image deployment/your-deployment your-container=${DOCKERHUB_REPO}:${env.BUILD_NUMBER}
+                        kubectl rollout status deployment/your-deployment
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
